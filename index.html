@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+
+<head>
+    <meta charset="utf-8" />
+    <title>Phun Potthea - Travel Edition | Click to View Full Image</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+
+    <!-- GLOBAL MANDATORY STYLES -->
+    <link href="http://fonts.googleapis.com/css?family=Hind:300,400,500,600,700" rel="stylesheet" type="text/css">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="img/logo-dark.png" type="image/png">
+    <!-- PAGE LEVEL PLUGIN STYLES -->
+    <link href="css/animate.css" rel="stylesheet">
+
+    <!-- THEME STYLES -->
+    <link href="css/layout.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <style>
+        /* ========== SIMPLE GALLERY - NO BORDER RADIUS, NO HOVER EFFECT ========== */
+
+        /* Remove border radius from all images */
+        img {
+            border-radius: 0 !important;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: visible;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: none;
+            /* No hover effect */
+            border-radius: 0 !important;
+        }
+
+        /* No hover zoom, no opacity change */
+        .gallery-item:hover img {
+            transform: none;
+            opacity: 1;
+        }
+
+        /* No overlay on hover - completely removed */
+        .gallery-overlay {
+            display: none;
+        }
+
+        /* Simple click hint */
+        .click-hint {
+            font-size: 12px;
+            color: #17bed2;
+            margin-top: 8px;
+            display: inline-block;
+            background: rgba(23, 190, 210, 0.1);
+            padding: 4px 12px;
+            border-radius: 30px;
+        }
+
+        .click-hint i {
+            margin-right: 5px;
+        }
+
+        /* Masonry grid spacing */
+        .masonry-grid-item {
+            padding: 0 10px 20px 10px;
+        }
+
+        /* Lightbox Modal Styles - Full screen image viewer */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            animation: fadeInLightbox 0.25s ease;
+        }
+
+        @keyframes fadeInLightbox {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .lightbox-image {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            cursor: default;
+            animation: zoomInImg 0.25s cubic-bezier(0.2, 0.8, 0.4, 1);
+            border-radius: 0 !important;
+        }
+
+        @keyframes zoomInImg {
+            from {
+                transform: scale(0.88);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 42px;
+            cursor: pointer;
+            z-index: 100000;
+            opacity: 0.8;
+            transition: opacity 0.2s, transform 0.2s;
+            font-weight: 300;
+            font-family: Arial, sans-serif;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .lightbox-caption {
+            position: fixed;
+            bottom: 25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            letter-spacing: 0.03em;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 20px;
+            width: fit-content;
+            margin: 0 auto;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+        }
+
+        .lightbox-prev,
+        .lightbox-next {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 100000;
+            opacity: 0.7;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: opacity 0.2s, background 0.2s;
+            user-select: none;
+        }
+
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        @media (max-width: 768px) {
+
+            .lightbox-prev,
+            .lightbox-next {
+                font-size: 30px;
+                padding: 8px 15px;
+            }
+
+            .lightbox-close {
+                top: 15px;
+                right: 20px;
+                font-size: 36px;
+            }
+        }
+
+        /* No border radius on any elements */
+        .work,
+        .work-overlay,
+        .gallery-item,
+        .masonry-grid-item,
+        .promo-block,
+        .container,
+        .navbar {
+            border-radius: 0 !important;
+        }
+
+        /* Ensure images have no border radius */
+        .full-width,
+        .img-responsive,
+        .travel-photo {
+            border-radius: 0 !important;
+        }
+
+        /* Simple pointer cursor on images */
+        .gallery-item {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body id="body" data-spy="scroll" data-target=".header">
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightboxModal" class="lightbox-modal">
+        <span class="lightbox-close" id="lightboxCloseBtn">&times;</span>
+        <span class="lightbox-prev" id="lightboxPrevBtn">&#8249;</span>
+        <div class="lightbox-content">
+            <img id="lightboxImg" class="lightbox-image" src="" alt="Full size travel photo">
+        </div>
+        <span class="lightbox-next" id="lightboxNextBtn">&#8250;</span>
+        <div id="lightboxCaption" class="lightbox-caption"></div>
+    </div>
+
+    <!--========== HEADER ==========-->
+    <header class="header navbar-fixed-top">
+        <nav class="navbar" role="navigation">
+            <div class="container">
+                <div class="menu-container js_nav-item">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="toggle-icon"></span>
+                    </button>
+                    <div class="logo">
+                        <a class="logo-wrap" href="#body">
+                            <img class="logo-img logo-img-main" src="img/logo.png" alt="Logo">
+                            <img class="logo-img logo-img-active" src="img/logo-dark.png" alt="Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse nav-collapse">
+                    <div class="menu-container">
+                        <ul class="nav navbar-nav navbar-nav-right">
+                            <li class="js_nav-item nav-item"><a class="nav-item-child nav-item-hover"
+                                    href="#body">Home</a></li>
+                            <li class="js_nav-item nav-item"><a class="nav-item-child nav-item-hover"
+                                    href="#travel">Travel</a></li>
+                            <li class="js_nav-item nav-item"><a class="nav-item-child nav-item-hover"
+                                    href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!--========== END HEADER ==========-->
+
+    <!--========== SLIDER ==========-->
+    <div class="promo-block parallax-window" data-parallax="scroll" data-image-src="img/travel/t78.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="promo-block-divider">
+                        <h1 class="promo-block-title">Phun <br /> Potthea</h1>
+                        <p class="promo-block-text">Travel Enthusiast</p>
+                    </div>
+                    <ul class="list-inline">
+                        <li><a href="https://www.facebook.com/PottheaPhun1" class="social-icons"><i
+                                    class="icon-social-facebook"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--========== END SLIDER ==========-->
+
+    <!--========== TRAVEL GALLERY SECTION - NO BORDER RADIUS, CLICK TO VIEW FULL ==========-->
+    <div id="travel">
+        <div class="container content-lg">
+            <div class="row">
+                <div class="col-sm-3 sm-margin-b-30">
+                    <div class="text-right sm-text-left">
+                        <h2 class="margin-b-0">Travel</h2>
+                        <p>Adventure Diaries — 78 destinations</p>
+
+                    </div>
+                </div>
+                <div class="col-sm-8 col-sm-offset-1">
+                    <div class="masonry-grid row ">
+                        <div class="masonry-grid-sizer col-xs-6 col-sm-6 col-md-1"></div>
+
+                        <!-- Travel images t1 to t78 - click to open full image in lightbox, NO border radius, NO hover effect -->
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-8">
+                            <div class="gallery-item" data-img-src="img/travel/t1.jpg"
+                                data-img-alt="Mountain Adventure">
+                                <img class="full-width img-responsive" src="img/travel/t1.jpg" alt="Mountain Adventure">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t2.jpg" data-img-alt="City Explorer">
+                                <img class="full-width img-responsive" src="img/travel/t2.jpg" alt="City Explorer">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-8">
+                            <div class="gallery-item" data-img-src="img/travel/t3.jpg" data-img-alt="Sunset Paradise">
+                                <img class="full-width img-responsive" src="img/travel/t3.jpg" alt="Sunset Paradise">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t4.jpg" data-img-alt="Jungle Trek">
+                                <img class="full-width img-responsive" src="img/travel/t4.jpg" alt="Jungle Trek">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t5.jpg" data-img-alt="Ancient Temple">
+                                <img class="full-width img-responsive" src="img/travel/t5.jpg" alt="Ancient Temple">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t6.jpg" data-img-alt="Coastal View">
+                                <img class="full-width img-responsive" src="img/travel/t6.jpg" alt="Coastal View">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t7.jpg" data-img-alt="Waterfall Forest">
+                                <img class="full-width img-responsive" src="img/travel/t7.jpg" alt="Waterfall Forest">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t8.jpg" data-img-alt="Rice Terrace">
+                                <img class="full-width img-responsive" src="img/travel/t8.jpg" alt="Rice Terrace">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t9.jpg" data-img-alt="Historic Bridge">
+                                <img class="full-width img-responsive" src="img/travel/t9.jpg" alt="Historic Bridge">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t10.jpg" data-img-alt="Night Market">
+                                <img class="full-width img-responsive" src="img/travel/t10.jpg" alt="Night Market">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t11.jpg" data-img-alt="Desert Safari">
+                                <img class="full-width img-responsive" src="img/travel/t11.jpg" alt="Desert Safari">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t12.jpg" data-img-alt="Snow Mountain">
+                                <img class="full-width img-responsive" src="img/travel/t12.jpg" alt="Snow Mountain">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t13.jpg" data-img-alt="Castle Ruins">
+                                <img class="full-width img-responsive" src="img/travel/t13.jpg" alt="Castle Ruins">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t14.jpg" data-img-alt="Colorful Streets">
+                                <img class="full-width img-responsive" src="img/travel/t14.jpg" alt="Colorful Streets">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t15.jpg" data-img-alt="Kayaking Sunset">
+                                <img class="full-width img-responsive" src="img/travel/t15.jpg" alt="Kayaking Sunset">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t16.jpg" data-img-alt="Mountain Lake">
+                                <img class="full-width img-responsive" src="img/travel/t16.jpg" alt="Mountain Lake">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t17.jpg" data-img-alt="Local Festival">
+                                <img class="full-width img-responsive" src="img/travel/t17.jpg" alt="Local Festival">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t18.jpg" data-img-alt="Hidden Cave">
+                                <img class="full-width img-responsive" src="img/travel/t18.jpg" alt="Hidden Cave">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t19.jpg" data-img-alt="Mystic Forest">
+                                <img class="full-width img-responsive" src="img/travel/t19.jpg" alt="Mystic Forest">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t20.jpg" data-img-alt="Ocean View">
+                                <img class="full-width img-responsive" src="img/travel/t20.jpg" alt="Ocean View">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t21.jpg" data-img-alt="Countryside">
+                                <img class="full-width img-responsive" src="img/travel/t21.jpg" alt="Countryside">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t22.jpg" data-img-alt="Urban Adventure">
+                                <img class="full-width img-responsive" src="img/travel/t22.jpg" alt="Urban Adventure">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t23.jpg" data-img-alt="Sunrise Peak">
+                                <img class="full-width img-responsive" src="img/travel/t23.jpg" alt="Sunrise Peak">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t24.jpg" data-img-alt="Valley View">
+                                <img class="full-width img-responsive" src="img/travel/t24.jpg" alt="Valley View">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t25.jpg" data-img-alt="Lake District">
+                                <img class="full-width img-responsive" src="img/travel/t25.jpg" alt="Lake District">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t26.jpg" data-img-alt="Volcano Trail">
+                                <img class="full-width img-responsive" src="img/travel/t26.jpg" alt="Volcano Trail">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t27.jpg" data-img-alt="Coral Reef">
+                                <img class="full-width img-responsive" src="img/travel/t27.jpg" alt="Coral Reef">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t28.jpg"
+                                data-img-alt="Rainforest Canopy">
+                                <img class="full-width img-responsive" src="img/travel/t28.jpg" alt="Rainforest Canopy">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t29.jpg" data-img-alt="Desert Dunes">
+                                <img class="full-width img-responsive" src="img/travel/t29.jpg" alt="Desert Dunes">
+                            </div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t30.jpg" data-img-alt="Glacier Hike">
+                                <img class="full-width img-responsive" src="img/travel/t30.jpg" alt="Glacier Hike">
+                            </div>
+                        </div>
+
+                        <!-- t31 to t78 -->
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t31.jpg" data-img-alt="Island Paradise">
+                                <img class="full-width img-responsive" src="img/travel/t31.jpg" alt="Island Paradise">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t32.jpg" data-img-alt="Canyon View"><img
+                                    class="full-width img-responsive" src="img/travel/t32.jpg" alt="Canyon View"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t33.jpg" data-img-alt="Mountain Pass">
+                                <img class="full-width img-responsive" src="img/travel/t33.jpg" alt="Mountain Pass">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t34.jpg" data-img-alt="Water Village">
+                                <img class="full-width img-responsive" src="img/travel/t34.jpg" alt="Water Village">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t35.jpg" data-img-alt="Cherry Blossom">
+                                <img class="full-width img-responsive" src="img/travel/t35.jpg" alt="Cherry Blossom">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t36.jpg" data-img-alt="Lavender Field">
+                                <img class="full-width img-responsive" src="img/travel/t36.jpg" alt="Lavender Field">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t37.jpg" data-img-alt="Night Sky"><img
+                                    class="full-width img-responsive" src="img/travel/t37.jpg" alt="Night Sky"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t38.jpg" data-img-alt="Aurora Borealis">
+                                <img class="full-width img-responsive" src="img/travel/t38.jpg" alt="Aurora Borealis">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t39.jpg" data-img-alt="Tropical Beach">
+                                <img class="full-width img-responsive" src="img/travel/t39.jpg" alt="Tropical Beach">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t40.jpg" data-img-alt="Mossy Forest"><img
+                                    class="full-width img-responsive" src="img/travel/t40.jpg" alt="Mossy Forest"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t41.jpg" data-img-alt="Rock Formation">
+                                <img class="full-width img-responsive" src="img/travel/t41.jpg" alt="Rock Formation">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t42.jpg" data-img-alt="Floating Market">
+                                <img class="full-width img-responsive" src="img/travel/t42.jpg" alt="Floating Market">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t43.jpg" data-img-alt="Tea Plantation">
+                                <img class="full-width img-responsive" src="img/travel/t43.jpg" alt="Tea Plantation">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t44.jpg" data-img-alt="Windmills"><img
+                                    class="full-width img-responsive" src="img/travel/t44.jpg" alt="Windmills"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t45.jpg"
+                                data-img-alt="Cobblestone Street"><img class="full-width img-responsive"
+                                    src="img/travel/t45.jpg" alt="Cobblestone Street"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t46.jpg" data-img-alt="Mountain Cabin">
+                                <img class="full-width img-responsive" src="img/travel/t46.jpg" alt="Mountain Cabin">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t47.jpg" data-img-alt="Rice Paddies"><img
+                                    class="full-width img-responsive" src="img/travel/t47.jpg" alt="Rice Paddies"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t48.jpg" data-img-alt="Cliff Edge"><img
+                                    class="full-width img-responsive" src="img/travel/t48.jpg" alt="Cliff Edge"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t49.jpg" data-img-alt="Monastery"><img
+                                    class="full-width img-responsive" src="img/travel/t49.jpg" alt="Monastery"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t50.jpg" data-img-alt="Coastal Cliff">
+                                <img class="full-width img-responsive" src="img/travel/t50.jpg" alt="Coastal Cliff">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t51.jpg" data-img-alt="Bamboo Forest">
+                                <img class="full-width img-responsive" src="img/travel/t51.jpg" alt="Bamboo Forest">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t52.jpg" data-img-alt="Sand Dunes"><img
+                                    class="full-width img-responsive" src="img/travel/t52.jpg" alt="Sand Dunes"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t53.jpg" data-img-alt="Glacier Lagoon">
+                                <img class="full-width img-responsive" src="img/travel/t53.jpg" alt="Glacier Lagoon">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t54.jpg" data-img-alt="Hot Air Balloon">
+                                <img class="full-width img-responsive" src="img/travel/t54.jpg" alt="Hot Air Balloon">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t55.jpg" data-img-alt="Underwater Cave">
+                                <img class="full-width img-responsive" src="img/travel/t55.jpg" alt="Underwater Cave">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t56.jpg" data-img-alt="Mountain Road">
+                                <img class="full-width img-responsive" src="img/travel/t56.jpg" alt="Mountain Road">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t57.jpg"
+                                data-img-alt="Sunset Silhouette"><img class="full-width img-responsive"
+                                    src="img/travel/t57.jpg" alt="Sunset Silhouette"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t58.jpg" data-img-alt="Foggy Morning">
+                                <img class="full-width img-responsive" src="img/travel/t58.jpg" alt="Foggy Morning">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t59.jpg"
+                                data-img-alt="Wildflower Meadow"><img class="full-width img-responsive"
+                                    src="img/travel/t59.jpg" alt="Wildflower Meadow"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t60.jpg" data-img-alt="Seaside Village">
+                                <img class="full-width img-responsive" src="img/travel/t60.jpg" alt="Seaside Village">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t61.jpg"
+                                data-img-alt="Winter Wonderland"><img class="full-width img-responsive"
+                                    src="img/travel/t61.jpg" alt="Winter Wonderland"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t62.jpg" data-img-alt="Autumn Colors">
+                                <img class="full-width img-responsive" src="img/travel/t62.jpg" alt="Autumn Colors">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t63.jpg" data-img-alt="Spring Blossoms">
+                                <img class="full-width img-responsive" src="img/travel/t63.jpg" alt="Spring Blossoms">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t64.jpg" data-img-alt="Summer Beach"><img
+                                    class="full-width img-responsive" src="img/travel/t64.jpg" alt="Summer Beach"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t65.jpg" data-img-alt="Historic Temple">
+                                <img class="full-width img-responsive" src="img/travel/t65.jpg" alt="Historic Temple">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t66.jpg" data-img-alt="Modern City"><img
+                                    class="full-width img-responsive" src="img/travel/t66.jpg" alt="Modern City"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t67.jpg" data-img-alt="Country Road"><img
+                                    class="full-width img-responsive" src="img/travel/t67.jpg" alt="Country Road"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t68.jpg" data-img-alt="Mountain Peak">
+                                <img class="full-width img-responsive" src="img/travel/t68.jpg" alt="Mountain Peak">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t69.jpg" data-img-alt="Crystal Cave"><img
+                                    class="full-width img-responsive" src="img/travel/t69.jpg" alt="Crystal Cave"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t70.jpg" data-img-alt="Star Gazing"><img
+                                    class="full-width img-responsive" src="img/travel/t70.jpg" alt="Star Gazing"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t71.jpg" data-img-alt="Rainbow Falls">
+                                <img class="full-width img-responsive" src="img/travel/t71.jpg" alt="Rainbow Falls">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t72.jpg"
+                                data-img-alt="Geothermal Springs"><img class="full-width img-responsive"
+                                    src="img/travel/t72.jpg" alt="Geothermal Springs"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t73.jpg" data-img-alt="Mangrove Forest">
+                                <img class="full-width img-responsive" src="img/travel/t73.jpg" alt="Mangrove Forest">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t74.jpg" data-img-alt="Salt Flats"><img
+                                    class="full-width img-responsive" src="img/travel/t74.jpg" alt="Salt Flats"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t75.jpg" data-img-alt="Oasis"><img
+                                    class="full-width img-responsive" src="img/travel/t75.jpg" alt="Oasis"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t76.jpg" data-img-alt="Volcano Crater">
+                                <img class="full-width img-responsive" src="img/travel/t76.jpg" alt="Volcano Crater">
+                            </div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t77.jpg" data-img-alt="Coral Garden"><img
+                                    class="full-width img-responsive" src="img/travel/t77.jpg" alt="Coral Garden"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t78.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t78.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t79.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t79.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t80.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t80.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t81.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t81.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t82.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t82.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t83.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t83.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <!-- <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t78.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t84.jpg" alt="Grand Sunset"></div>
+                        </div> -->
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t85.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t85.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t86.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t86.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t87.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t87.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t88.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t88.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t89.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t89.jpg" alt="Grand Sunset"></div>
+                        </div>
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t91.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t91.jpg" alt="Grand Sunset"></div>
+                        </div>
+
+                        <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t92.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t92.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t93.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t93.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t94.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t94.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t95.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t95.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t96.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t96.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <!-- <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t78.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t97.jpg" alt="Grand Sunset"></div>
+                        </div> -->
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t98.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t98.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t99.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t99.jpg" alt="Grand Sunset"></div>
+                        </div>
+                         <div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">
+                            <div class="gallery-item" data-img-src="img/travel/t100.jpg" data-img-alt="Grand Sunset"><img
+                                    class="full-width img-responsive" src="img/travel/t100.jpg" alt="Grand Sunset"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--========== END TRAVEL ==========-->
+
+    <!--========== CONTACT SECTION ==========-->
+    <div id="contact">
+        <div class="bg-color-sky-light">
+            <div class="container content-lg">
+                <div class="row">
+                    <div class="col-sm-3 sm-margin-b-30">
+                        <div class="text-right sm-text-left">
+                            <h2 class="margin-b-0">Contacts</h2>
+                            <p>Hire me.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-8 col-sm-offset-1">
+                        <div class="row">
+                            <div class="col-md-3 col-xs-6 md-margin-b-30">
+                                <h5>Location</h5><a href="#">Street 271, Phnom Penh</a>
+                            </div>
+                            <div class="col-md-3 col-xs-6 md-margin-b-30">
+                                <h5>Phone</h5><a href="#">+855 86 349 187</a>
+                            </div>
+                            <div class="col-md-3 col-xs-6">
+                                <h5>Email</h5><a href="mailto:#">pottheamr@gmail.com</a>
+                            </div>
+                            <div class="col-md-3 col-xs-6">
+                                <h5>Telegram</h5><a href="https://t.me/yourusername" target="_blank">@potthea9 /
+                                    086349187</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--========== END CONTACT ==========-->
+
+    <!--========== FOOTER ==========-->
+    <footer class="footer">
+        <div class="content container">
+            <div class="row">
+                <div class="col-xs-6"><img class="footer-logo" src="img/logo-dark.png" alt="Logo"></div>
+                <div class="col-xs-6 text-right sm-text-left">
+                    <p>Phun Potthea Bros Smos Kampot Province</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--========== END FOOTER ==========-->
+
+    <!-- Back To Top -->
+    <a href="javascript:void(0);" class="js-back-to-top back-to-top">Top</a>
+
+    <!-- JAVASCRIPTS -->
+    <script src="vendor/jquery.min.js" type="text/javascript"></script>
+    <script src="vendor/jquery-migrate.min.js" type="text/javascript"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="vendor/jquery.easing.js" type="text/javascript"></script>
+    <script src="vendor/jquery.back-to-top.js" type="text/javascript"></script>
+    <script src="vendor/jquery.smooth-scroll.js" type="text/javascript"></script>
+    <script src="vendor/jquery.wow.min.js" type="text/javascript"></script>
+    <script src="vendor/jquery.parallax.min.js" type="text/javascript"></script>
+    <script src="vendor/jquery.appear.js" type="text/javascript"></script>
+    <script src="vendor/masonry/jquery.masonry.pkgd.min.js" type="text/javascript"></script>
+    <script src="vendor/masonry/imagesloaded.pkgd.min.js" type="text/javascript"></script>
+    <script src="js/layout.min.js" type="text/javascript"></script>
+    <script src="js/components/progress-bar.min.js" type="text/javascript"></script>
+    <script src="js/components/masonry.min.js" type="text/javascript"></script>
+    <script src="js/components/wow.min.js" type="text/javascript"></script>
+
+    <!-- Main Script: Click to show full image in lightbox - NO HOVER, NO BORDER RADIUS -->
+    <script>
+        $(document).ready(function () {
+            // Collect all gallery items for prev/next navigation
+            var allImages = [];
+            var currentIndex = 0;
+
+            function buildImageList() {
+                allImages = [];
+                $('.gallery-item').each(function () {
+                    var imgSrc = $(this).data('img-src');
+                    var imgAlt = $(this).data('img-alt') || $(this).find('img').attr('alt') || 'Travel Photo';
+                    if (imgSrc) {
+                        allImages.push({ src: imgSrc, alt: imgAlt });
+                    }
+                });
+                console.log('✅ Loaded ' + allImages.length + ' images for lightbox');
+            }
+
+            // Open lightbox with specific image index
+            function openLightbox(index) {
+                if (index < 0) index = allImages.length - 1;
+                if (index >= allImages.length) index = 0;
+                currentIndex = index;
+                var img = allImages[currentIndex];
+                $('#lightboxImg').attr('src', img.src);
+                $('#lightboxCaption').text(img.alt + '  (' + (currentIndex + 1) + ' / ' + allImages.length + ')');
+                $('#lightboxModal').css('display', 'flex');
+                $('body').css('overflow', 'hidden');
+            }
+
+            function closeLightbox() {
+                $('#lightboxModal').fadeOut(200);
+                $('body').css('overflow', '');
+                setTimeout(function () {
+                    $('#lightboxImg').attr('src', '');
+                }, 200);
+            }
+
+            // Event: Click on gallery item (entire div including image) - NO hover needed, just click
+            $(document).on('click', '.gallery-item', function (e) {
+                e.stopPropagation();
+                buildImageList();
+                var clickedSrc = $(this).data('img-src');
+                var index = 0;
+                for (var i = 0; i < allImages.length; i++) {
+                    if (allImages[i].src === clickedSrc) {
+                        index = i;
+                        break;
+                    }
+                }
+                openLightbox(index);
+                return false;
+            });
+
+            // Close lightbox on close button
+            $('#lightboxCloseBtn').on('click', function (e) {
+                e.stopPropagation();
+                closeLightbox();
+            });
+
+            // Click on modal background to close
+            $('#lightboxModal').on('click', function (e) {
+                if ($(e.target).is('#lightboxModal')) {
+                    closeLightbox();
+                }
+            });
+
+            // Prev / Next buttons
+            $('#lightboxPrevBtn').on('click', function (e) {
+                e.stopPropagation();
+                openLightbox(currentIndex - 1);
+            });
+
+            $('#lightboxNextBtn').on('click', function (e) {
+                e.stopPropagation();
+                openLightbox(currentIndex + 1);
+            });
+
+            // Keyboard navigation
+            $(document).on('keydown', function (e) {
+                if ($('#lightboxModal').is(':visible')) {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft') $('#lightboxPrevBtn').trigger('click');
+                    if (e.key === 'ArrowRight') $('#lightboxNextBtn').trigger('click');
+                }
+            });
+
+            // Initialize masonry layout
+            if ($('.masonry-grid').length && typeof $.fn.masonry !== 'undefined') {
+                $('.masonry-grid').imagesLoaded(function () {
+                    $('.masonry-grid').masonry({
+                        itemSelector: '.masonry-grid-item',
+                        columnWidth: '.masonry-grid-sizer',
+                        percentPosition: true
+                    });
+                });
+            }
+
+            // Ensure no border radius on any images
+            $('img').css('border-radius', '0');
+
+            console.log('✅ Gallery ready! Click any photo to view full image (no border radius, no hover effect)');
+        });
+    </script>
+
+</body>
+
+</html>
