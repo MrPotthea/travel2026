@@ -335,17 +335,16 @@
          PIXABAY API FETCH  +  MASONRY  +  LIGHTBOX
          ================================================================ -->
     <script>
-        $(document).ready(function () {
+               $(document).ready(function () {
 
             /* ============================================================
                1.  CONFIGURATION
                ============================================================ */
             var API_KEY = '42020991-e38fcf0988ea1811fab6ddadb'; // API Key របស់អ្នក
             
-            // ដាក់ ID នៃរូបភាពទាំង ៤ របស់អ្នកនៅទីនេះ (ខណ្ឌចែកដោយសញ្ញាក្បៀស)។ 
-            // ឧទាហរណ៍៖ [1234567, 7654321, 1122334, 4433221]
-            // ដាក់ ID របស់រូបភាពទាំងអស់នៅទីនេះ
-var MY_PIXABAY_IDS = [10531076]; 
+            // ខ្ញុំបានដាក់ ID រូបភាពដំបូងរបស់អ្នកនៅទីនេះហើយ
+            // អ្នកអាចបន្ថែម ID ផ្សេងទៀតដោយប្រើសញ្ញាក្បៀស (ឧ. [10531076, 123456, 987654])
+            var MY_PIXABAY_IDS = [10531076]; 
 
             /* ============================================================
                2.  MASONRY SETUP
@@ -373,11 +372,11 @@ var MY_PIXABAY_IDS = [10531076];
             /* ============================================================
                3.  HELPER FUNCTIONS
                ============================================================ */
-            function makeItem(src, alt) {
+            function makeItem(thumbSrc, fullSrc, alt) {
                 return $(
                     '<div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">'
-                  + '  <div class="gallery-item" data-img-src="' + src + '" data-img-alt="' + alt + '">'
-                  + '    <img class="full-width img-responsive" src="' + src + '" alt="' + alt + '" loading="lazy">'
+                  + '  <div class="gallery-item" data-img-src="' + fullSrc + '" data-img-alt="' + alt + '">'
+                  + '    <img class="full-width img-responsive" src="' + thumbSrc + '" alt="' + alt + '" loading="lazy">'
                   + '  </div>'
                   + '</div>'
                 );
@@ -397,11 +396,11 @@ var MY_PIXABAY_IDS = [10531076];
 
                 var apiUrl = 'https://pixabay.com/api/?key=' + API_KEY;
 
-                // ប្រសិនបើអ្នកដាក់ ID នៅក្នុង MY_PIXABAY_IDS វានឹងទាញយកតាម ID
-                // ប្រសិនបើទំនេរ វានឹងទាញយករូបភាពអំពី "travel" ជាទូទៅ
+                // ទាញយកតាម ID ដែលអ្នកបានកំណត់
                 if (MY_PIXABAY_IDS.length > 0) {
                     apiUrl += '&id=' + MY_PIXABAY_IDS.join(',');
                 } else {
+                    // បើគ្មាន ID ទេ វានឹងបង្ហាញរូបភាព Travel ទូទៅ
                     apiUrl += '&q=travel&image_type=photo&category=travel&per_page=20';
                 }
 
@@ -409,16 +408,14 @@ var MY_PIXABAY_IDS = [10531076];
                     .done(function (data) {
                         if (data.hits && data.hits.length > 0) {
                             data.hits.forEach(function (hit) {
-                                // ប្រើ webformatURL (ទំហំ 640px) សម្រាប់បង្ហាញក្នុង Gallery
-                                var thumb = hit.webformatURL;
-                                // ប្រើ largeImageURL (ទំហំ 1280px) សម្រាប់បង្ហាញពេលចុចមើលធំ (Lightbox)
-                                var full  = hit.largeImageURL || hit.webformatURL;
+                                var thumb = hit.webformatURL; // រូបតូច 640px
+                                var full  = hit.largeImageURL || hit.webformatURL; // រូបធំ 1280px សម្រាប់ Lightbox
                                 var alt   = (hit.tags || 'Travel Photo').replace(/"/g, '&quot;');
 
-                                appendItem(makeItem(thumb, alt, full)); 
+                                appendItem(makeItem(thumb, full, alt)); 
                             });
                         } else {
-                            $('#galleryError').text('មិនមានរូបភាពត្រូវបានរកឃើញទេ។ សូមពិនិត្យ ID ឬ API Key របស់អ្នក។').show();
+                            $('#galleryError').text('រកមិនឃើញរូបភាពទេ។ សូមពិនិត្យ ID ឬ API Key ឡើងវិញ។').show();
                         }
                     })
                     .fail(function (xhr) {
@@ -522,7 +519,7 @@ var MY_PIXABAY_IDS = [10531076];
             });
 
             $('img').css('border-radius', '0');
-            console.log('✅ Gallery ready — Fetching from Pixabay API.');
+            console.log('✅ Gallery ready — Fetching specific IDs from Pixabay API.');
         });
     </script>
 
