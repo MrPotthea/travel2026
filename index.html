@@ -4,32 +4,23 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Phun Potthea - Travel Edition | Pixabay Powered</title>
+    <title>Phun Potthea - Travel Edition | My Photos</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />
 
-    <!-- GLOBAL MANDATORY STYLES -->
     <link href="http://fonts.googleapis.com/css?family=Hind:300,400,500,600,700" rel="stylesheet" type="text/css">
     <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="img/logo-dark.png" type="image/png">
-    <!-- PAGE LEVEL PLUGIN STYLES -->
     <link href="css/animate.css" rel="stylesheet">
-
-    <!-- THEME STYLES -->
     <link href="css/layout.min.css" rel="stylesheet" type="text/css" />
-
-    <!-- Favicon -->
     <link rel="shortcut icon" href="favicon.ico" />
 
     <style>
-        /* ========== SIMPLE GALLERY - NO BORDER RADIUS, NO HOVER EFFECT ========== */
-
-        img {
-            border-radius: 0 !important;
-        }
+        /* ========== SIMPLE GALLERY - NO BORDER RADIUS, NO HOVER ========== */
+        img { border-radius: 0 !important; }
 
         .gallery-item {
             position: relative;
@@ -45,80 +36,55 @@
             border-radius: 0 !important;
         }
 
-        .gallery-item:hover img {
-            transform: none;
-            opacity: 1;
+        .gallery-item:hover img { transform: none; opacity: 1; }
+
+        .masonry-grid-item { padding: 0 10px 20px 10px; }
+
+        /* ---------- UPLOAD TOOLBAR ---------- */
+        .upload-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(23, 190, 210, 0.07);
+            border-left: 3px solid #17bed2;
         }
 
-        .gallery-overlay {
-            display: none;
-        }
-
-        .masonry-grid-item {
-            padding: 0 10px 20px 10px;
-        }
-
-        /* ---------- LOADING / STATUS ---------- */
-        .gallery-status {
-            text-align: center;
-            padding: 30px 20px;
-            color: #17bed2;
-            font-size: 15px;
-            background: rgba(23, 190, 210, 0.06);
-            margin-bottom: 20px;
-        }
-
-        .gallery-status i {
-            display: inline-block;
-            margin-right: 8px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        #galleryError {
-            margin-bottom: 20px;
-            border-radius: 0;
-        }
-
-        #loadMoreBtn {
+        .upload-toolbar .btn {
             border-radius: 0 !important;
-            padding: 12px 40px;
+            padding: 10px 22px;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.03em;
+        }
+
+        .btn-upload {
             background: #17bed2;
             color: #fff;
             border: none;
-            display: none;
         }
+        .btn-upload:hover { background: #14a5b7; color: #fff; }
 
-        #loadMoreBtn:hover {
-            background: #14a5b7;
-            color: #fff;
+        .btn-clear {
+            background: transparent;
+            color: #d9534f;
+            border: 1px solid #d9534f;
         }
+        .btn-clear:hover { background: #d9534f; color: #fff; }
 
-        .pixabay-credit {
-            text-align: center;
-            color: #888;
+        .upload-info {
             font-size: 12px;
-            margin-top: 30px;
-        }
-
-        .pixabay-credit a {
-            color: #17bed2;
-            font-weight: 600;
+            color: #888;
+            margin-left: auto;
         }
 
         /* ---------- LIGHTBOX ---------- */
         .lightbox-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95);
             z-index: 99999;
             justify-content: center;
@@ -154,8 +120,7 @@
 
         .lightbox-close {
             position: fixed;
-            top: 20px;
-            right: 30px;
+            top: 20px; right: 30px;
             color: #fff;
             font-size: 42px;
             cursor: pointer;
@@ -165,17 +130,11 @@
             font-weight: 300;
             font-family: Arial, sans-serif;
         }
-
-        .lightbox-close:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
+        .lightbox-close:hover { opacity: 1; transform: scale(1.1); }
 
         .lightbox-caption {
             position: fixed;
-            bottom: 25px;
-            left: 0;
-            right: 0;
+            bottom: 25px; left: 0; right: 0;
             text-align: center;
             color: rgba(255, 255, 255, 0.85);
             font-size: 14px;
@@ -193,8 +152,7 @@
             white-space: nowrap;
         }
 
-        .lightbox-prev,
-        .lightbox-next {
+        .lightbox-prev, .lightbox-next {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
@@ -208,45 +166,22 @@
             transition: opacity 0.2s, background 0.2s;
             user-select: none;
         }
-
-        .lightbox-prev:hover,
-        .lightbox-next:hover {
+        .lightbox-prev:hover, .lightbox-next:hover {
             opacity: 1;
             background: rgba(255, 255, 255, 0.25);
         }
-
         .lightbox-prev { left: 20px; }
         .lightbox-next { right: 20px; }
 
         @media (max-width: 768px) {
-            .lightbox-prev,
-            .lightbox-next {
-                font-size: 30px;
-                padding: 8px 15px;
-            }
-            .lightbox-close {
-                top: 15px;
-                right: 20px;
-                font-size: 36px;
-            }
+            .lightbox-prev, .lightbox-next { font-size: 30px; padding: 8px 15px; }
+            .lightbox-close { top: 15px; right: 20px; font-size: 36px; }
         }
 
-        /* No border radius on any layout elements */
-        .work,
-        .work-overlay,
-        .gallery-item,
-        .masonry-grid-item,
-        .promo-block,
-        .container,
-        .navbar {
-            border-radius: 0 !important;
-        }
+        .work, .work-overlay, .gallery-item, .masonry-grid-item,
+        .promo-block, .container, .navbar { border-radius: 0 !important; }
 
-        .full-width,
-        .img-responsive,
-        .travel-photo {
-            border-radius: 0 !important;
-        }
+        .full-width, .img-responsive, .travel-photo { border-radius: 0 !important; }
     </style>
 </head>
 
@@ -297,8 +232,7 @@
     <!--========== END HEADER ==========-->
 
     <!--========== SLIDER ==========-->
-    <div class="promo-block parallax-window" data-parallax="scroll"
-        data-image-src="https://cdn.pixabay.com/photo/2016/11/29/09/32/adventure-1868817_1920.jpg">
+    <div class="promo-block parallax-window" data-parallax="scroll" data-image-src="img/travel/t78.jpg">
         <div class="container">
             <div class="row">
                 <div class="col-sm-6">
@@ -316,7 +250,7 @@
     </div>
     <!--========== END SLIDER ==========-->
 
-    <!--========== TRAVEL GALLERY - POWERED BY PIXABAY API ==========-->
+    <!--========== TRAVEL GALLERY - MY OWN PHOTOS ==========-->
     <div id="travel">
         <div class="container content-lg">
             <div class="row">
@@ -328,30 +262,24 @@
                 </div>
                 <div class="col-sm-8 col-sm-offset-1">
 
-                    <!-- Loading indicator -->
-                    <div id="galleryStatus" class="gallery-status">
-                        <i class="icon-refresh"></i> Loading travel photos from Pixabay&hellip;
+                    <!-- Upload toolbar -->
+                    <div class="upload-toolbar">
+                        <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;">
+                        <button class="btn btn-upload" id="uploadBtn">
+                            <i class="icon-cloud-upload"></i> Upload Photos
+                        </button>
+                        <button class="btn btn-clear" id="clearUploadsBtn">
+                            <i class="icon-trash"></i> Clear Uploads
+                        </button>
+                        <span class="upload-info">Max 2 MB per photo · Saved in browser</span>
                     </div>
 
-                    <!-- Error / rate-limit notice -->
-                    <div id="galleryError" class="alert alert-danger" style="display:none;"></div>
-
-                    <!-- Empty masonry grid — populated by JavaScript -->
+                    <!-- Masonry grid -->
                     <div class="masonry-grid row">
                         <div class="masonry-grid-sizer col-xs-6 col-sm-6 col-md-1"></div>
-                        <!-- Items injected here -->
+                        <!-- Items injected by JS -->
                     </div>
 
-                    <!-- Load More -->
-                    <div class="text-center" style="margin-top:20px;">
-                        <button id="loadMoreBtn" class="btn">Load More Photos</button>
-                    </div>
-
-                    <!-- Required Pixabay attribution -->
-                    <p class="pixabay-credit">
-                        Images provided by
-                        <a href="https://pixabay.com/" target="_blank" rel="noopener">Pixabay</a>
-                    </p>
                 </div>
             </div>
         </div>
@@ -405,7 +333,6 @@
     </footer>
     <!--========== END FOOTER ==========-->
 
-    <!-- Back To Top -->
     <a href="javascript:void(0);" class="js-back-to-top back-to-top">Top</a>
 
     <!-- JAVASCRIPTS -->
@@ -426,128 +353,212 @@
     <script src="js/components/wow.min.js" type="text/javascript"></script>
 
     <!-- ================================================================
-         PIXABAY API GALLERY  +  LIGHTBOX
+         MY OWN PHOTOS  +  UPLOAD  +  LIGHTBOX
          ================================================================ -->
     <script>
         $(document).ready(function () {
 
-            /* ------------------------------------------------------------
-               1.  MASONRY INITIALISATION  (empty grid, sizer only)
-               ------------------------------------------------------------ */
+            /* ============================================================
+               1.  CONFIG
+               ============================================================ */
+            var STORAGE_KEY  = 'phun_travel_uploads_v1';
+            var MAX_LOCAL_ID = 100;      // img/travel/t1.jpg → t100.jpg
+            var MAX_FILE_MB  = 2;        // max size per uploaded image
+
+            // files that don't exist / are commented out in original code
+            var SKIP_LOCAL = { 84: true, 90: true, 97: true };
+
+            /* ============================================================
+               2.  MASONRY SETUP (empty grid + sizer)
+               ============================================================ */
             var $grid = $('.masonry-grid');
 
-            if ($grid.length && typeof $.fn.masonry !== 'undefined') {
-                $grid.masonry({
-                    itemSelector: '.masonry-grid-item',
-                    columnWidth: '.masonry-grid-sizer',
-                    percentPosition: true
-                });
-            }
-
-            /* ------------------------------------------------------------
-               2.  PIXABAY API
-               ------------------------------------------------------------ */
-            var API_KEY  = '42020991-e38fcf0988ea1811fab6ddadb';
-            var PER_PAGE = 100;          // 100 images per batch (rate-limit friendly)
-            var currentPage = 1;
-            var isLoading   = false;
-            var hasMore     = true;
-
-            function loadImages(page) {
-                if (isLoading || !hasMore) return;
-                isLoading = true;
-
-                $('#galleryStatus').show();
-                $('#galleryError').hide();
-                $('#loadMoreBtn').hide();
-
-                var url = 'https://pixabay.com/api/'
-                    + '?key='        + API_KEY
-                    + '&q=travel'
-                    + '&category=travel'
-                    + '&image_type=photo'
-                    + '&safesearch=true'
-                    + '&order=popular'
-                    + '&per_page='   + PER_PAGE
-                    + '&page='       + page;
-
-                $.getJSON(url)
-                    .done(function (data) {
-                        if (data.hits && data.hits.length > 0) {
-                            renderImages(data.hits);
-                            currentPage = page + 1;
-
-                            // Stop when we've received the last page or hit the 500 cap
-                            if (data.hits.length < PER_PAGE || (currentPage - 1) * PER_PAGE >= 500) {
-                                hasMore = false;
-                            }
-                        } else {
-                            hasMore = false;
-                        }
-
-                        if (hasMore) $('#loadMoreBtn').show();
-                    })
-                    .fail(function (xhr) {
-                        var msg = 'Unable to load images from Pixabay. Please try again.';
-                        if (xhr.status === 429) {
-                            msg = 'Pixabay rate limit exceeded (100 req / 60 s). Please wait a moment and click "Load More".';
-                        } else if (xhr.status === 0) {
-                            msg = 'Network error — check your internet connection.';
-                        }
-                        $('#galleryError').text(msg).show();
-                    })
-                    .always(function () {
-                        isLoading = false;
-                        $('#galleryStatus').hide();
+            function initMasonry() {
+                if ($grid.length && typeof $.fn.masonry !== 'undefined') {
+                    $grid.masonry({
+                        itemSelector: '.masonry-grid-item',
+                        columnWidth: '.masonry-grid-sizer',
+                        percentPosition: true
                     });
+                }
             }
 
-            /* ------------------------------------------------------------
-               3.  RENDER IMAGES INTO MASONRY
-               ------------------------------------------------------------ */
-            function renderImages(hits) {
-                var html = '';
-
-                hits.forEach(function (hit) {
-                    var thumb = hit.webformatURL;                        // 640 px
-                    var full  = hit.largeImageURL || hit.webformatURL;   // 1280 px
-                    var alt   = (hit.tags || 'Travel Photo').replace(/"/g, '&quot;');
-
-                    html += '<div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">'
-                          +   '<div class="gallery-item" data-img-src="' + full + '" data-img-alt="' + alt + '">'
-                          +     '<img class="full-width img-responsive" src="' + thumb + '" alt="' + alt + '" loading="lazy">'
-                          +   '</div>'
-                          + '</div>';
-                });
-
-                var $newItems = $(html);
-                $grid.append($newItems).masonry('appended', $newItems);
-
-                $newItems.imagesLoaded(function () {
+            function layout() {
+                if ($grid.length && typeof $.fn.masonry !== 'undefined') {
                     $grid.masonry('layout');
+                }
+            }
+
+            initMasonry();
+
+            /* ============================================================
+               3.  HELPERS  —  build + append a gallery item
+               ============================================================ */
+            function makeItem(src, alt, isUpload) {
+                var $item = $(
+                    '<div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">'
+                  + '  <div class="gallery-item"' +
+                        ' data-img-src="' + src + '"' +
+                        ' data-img-alt="' + alt + '"' +
+                        (isUpload ? ' data-uploaded="true"' : '') + '>'
+                  + '    <img class="full-width img-responsive" src="' + src + '" alt="' + alt + '" loading="lazy">'
+                  + '  </div>'
+                  + '</div>'
+                );
+                return $item;
+            }
+
+            function appendItem($item) {
+                $grid.append($item).masonry('appended', $item);
+                $item.imagesLoaded(function () { layout(); });
+            }
+
+            /* ============================================================
+               4.  RENDER LOCAL IMAGES  (img/travel/t1..t100.jpg)
+               ============================================================ */
+            function renderLocalImages() {
+                for (var i = 1; i <= MAX_LOCAL_ID; i++) {
+                    if (SKIP_LOCAL[i]) continue;
+                    (function (idx) {
+                        var src = 'img/travel/t' + idx + '.jpg';
+                        var alt = 'Travel Photo ' + idx;
+                        var $item = makeItem(src, alt, false);
+
+                        // If image is missing (404), remove the placeholder gracefully
+                        $item.find('img').on('error', function () {
+                            $item.remove();
+                            layout();
+                        });
+
+                        appendItem($item);
+                    })(i);
+                }
+            }
+
+            /* ============================================================
+               5.  UPLOADED IMAGES  —  localStorage
+               ============================================================ */
+            function loadUploads() {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveUploads(arr) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+                    return true;
+                } catch (e) {
+                    return false;  // quota exceeded
+                }
+            }
+
+            function renderUploads() {
+                loadUploads().forEach(function (img) {
+                    var $item = makeItem(img.src, img.alt || 'Uploaded photo', true);
+                    appendItem($item);
                 });
             }
 
-            /* ------------------------------------------------------------
-               4.  LOAD-MORE BUTTON + FIRST LOAD
-               ------------------------------------------------------------ */
-            $('#loadMoreBtn').on('click', function () {
-                loadImages(currentPage);
+            /* ============================================================
+               6.  UPLOAD BUTTON
+               ============================================================ */
+            $('#uploadBtn').on('click', function () {
+                $('#imageUpload').trigger('click');
             });
 
-            loadImages(1);   // initial fetch
+            $('#imageUpload').on('change', function (e) {
+                var files = e.target.files;
+                if (!files || !files.length) return;
 
-            /* ------------------------------------------------------------
-               5.  LIGHTBOX
-               ------------------------------------------------------------ */
-            var allImages   = [];
+                var uploads = loadUploads();
+                var queued  = 0;
+                var done    = 0;
+                var skipped = [];
+
+                Array.prototype.forEach.call(files, function (file) {
+                    if (!file.type || file.type.indexOf('image/') !== 0) {
+                        skipped.push(file.name + ' (not an image)');
+                        return;
+                    }
+                    if (file.size > MAX_FILE_MB * 1024 * 1024) {
+                        skipped.push(file.name + ' (> ' + MAX_FILE_MB + ' MB)');
+                        return;
+                    }
+                    queued++;
+
+                    var reader = new FileReader();
+                    reader.onload = (function (f) {
+                        return function (evt) {
+                            var src = evt.target.result;
+                            var alt = f.name.replace(/\.[^.]+$/, '');
+                            var record = { src: src, alt: alt };
+
+                            uploads.push(record);
+                            appendItem(makeItem(src, alt, true));
+
+                            done++;
+                            if (done === queued) {
+                                // All files read — try to save
+                                if (!saveUploads(uploads)) {
+                                    alert(
+                                        'Uploaded photos are visible now, but could not be saved ' +
+                                        'because browser storage is full.\n\n' +
+                                        'They will disappear when you refresh. ' +
+                                        'Try smaller photos or click "Clear Uploads" first.'
+                                    );
+                                }
+                                if (skipped.length) {
+                                    alert('Skipped files:\n• ' + skipped.join('\n• '));
+                                }
+                            }
+                        };
+                    })(file);
+
+                    reader.readAsDataURL(file);
+                });
+
+                if (queued === 0) {
+                    if (skipped.length) alert('Skipped files:\n• ' + skipped.join('\n• '));
+                }
+
+                $(this).val('');  // reset so same file can be re-selected
+            });
+
+            /* ============================================================
+               7.  CLEAR UPLOADS
+               ============================================================ */
+            $('#clearUploadsBtn').on('click', function () {
+                if (!confirm('Remove all uploaded photos? (Local img/travel/ photos will stay)')) return;
+
+                localStorage.removeItem(STORAGE_KEY);
+                $('.gallery-item[data-uploaded="true"]')
+                    .closest('.masonry-grid-item')
+                    .remove();
+                layout();
+            });
+
+            /* ============================================================
+               8.  RENDER EVERYTHING
+               ============================================================ */
+            renderLocalImages();
+            renderUploads();
+
+            /* ============================================================
+               9.  LIGHTBOX
+               ============================================================ */
+            var allImages    = [];
             var currentIndex = 0;
 
             function buildImageList() {
                 allImages = [];
                 $('.gallery-item').each(function () {
                     var src = $(this).data('img-src');
-                    var alt = $(this).data('img-alt') || $(this).find('img').attr('alt') || 'Travel Photo';
+                    var alt = $(this).data('img-alt') ||
+                              $(this).find('img').attr('alt') ||
+                              'Travel Photo';
                     if (src) allImages.push({ src: src, alt: alt });
                 });
             }
@@ -560,7 +571,9 @@
 
                 var img = allImages[currentIndex];
                 $('#lightboxImg').attr('src', img.src);
-                $('#lightboxCaption').text(img.alt + '  (' + (currentIndex + 1) + ' / ' + allImages.length + ')');
+                $('#lightboxCaption').text(
+                    img.alt + '  (' + (currentIndex + 1) + ' / ' + allImages.length + ')'
+                );
                 $('#lightboxModal').css('display', 'flex');
                 $('body').css('overflow', 'hidden');
             }
@@ -571,7 +584,6 @@
                 setTimeout(function () { $('#lightboxImg').attr('src', ''); }, 200);
             }
 
-            /* click on a gallery item (delegated so it works for dynamic items) */
             $(document).on('click', '.gallery-item', function (e) {
                 e.stopPropagation();
                 buildImageList();
@@ -584,7 +596,6 @@
                 return false;
             });
 
-            /* close */
             $('#lightboxCloseBtn').on('click', function (e) {
                 e.stopPropagation();
                 closeLightbox();
@@ -594,7 +605,6 @@
                 if ($(e.target).is('#lightboxModal')) closeLightbox();
             });
 
-            /* prev / next — rebuild list first so new images are included */
             function navigate(delta) {
                 var curSrc = $('#lightboxImg').attr('src');
                 buildImageList();
@@ -606,28 +616,23 @@
             }
 
             $('#lightboxPrevBtn').on('click', function (e) {
-                e.stopPropagation();
-                navigate(-1);
+                e.stopPropagation(); navigate(-1);
             });
 
             $('#lightboxNextBtn').on('click', function (e) {
-                e.stopPropagation();
-                navigate(1);
+                e.stopPropagation(); navigate(1);
             });
 
-            /* keyboard */
             $(document).on('keydown', function (e) {
                 if ($('#lightboxModal').is(':visible')) {
-                    if (e.key === 'Escape')      closeLightbox();
-                    if (e.key === 'ArrowLeft')   navigate(-1);
-                    if (e.key === 'ArrowRight')  navigate(1);
+                    if (e.key === 'Escape')     closeLightbox();
+                    if (e.key === 'ArrowLeft')  navigate(-1);
+                    if (e.key === 'ArrowRight') navigate(1);
                 }
             });
 
-            /* final guard — no border radius anywhere */
             $('img').css('border-radius', '0');
-
-            console.log('✅ Pixabay gallery ready. Click a photo to open the lightbox.');
+            console.log('✅ Gallery ready — local photos + upload support.');
         });
     </script>
 
