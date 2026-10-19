@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Phun Potthea - Travel Edition | My Photos</title>
+    <title>Phun Potthea - Travel Edition | Pixabay API</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -40,43 +40,26 @@
 
         .masonry-grid-item { padding: 0 10px 20px 10px; }
 
-        /* ---------- UPLOAD TOOLBAR ---------- */
-        .upload-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: rgba(23, 190, 210, 0.07);
-            border-left: 3px solid #17bed2;
+        /* ---------- LOADING & ERROR STATUS ---------- */
+        .gallery-status {
+            text-align: center;
+            padding: 30px;
+            color: #17bed2;
+            font-size: 15px;
+            display: none; /* Hidden by default */
+        }
+        
+        .gallery-status i {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
         }
 
-        .upload-toolbar .btn {
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .alert-danger {
             border-radius: 0 !important;
-            padding: 10px 22px;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-        }
-
-        .btn-upload {
-            background: #17bed2;
-            color: #fff;
-            border: none;
-        }
-        .btn-upload:hover { background: #14a5b7; color: #fff; }
-
-        .btn-clear {
-            background: transparent;
-            color: #d9534f;
-            border: 1px solid #d9534f;
-        }
-        .btn-clear:hover { background: #d9534f; color: #fff; }
-
-        .upload-info {
-            font-size: 12px;
-            color: #888;
-            margin-left: auto;
+            display: none;
         }
 
         /* ---------- LIGHTBOX ---------- */
@@ -250,7 +233,7 @@
     </div>
     <!--========== END SLIDER ==========-->
 
-    <!--========== TRAVEL GALLERY - MY OWN PHOTOS ==========-->
+    <!--========== TRAVEL GALLERY - PIXABAY API ==========-->
     <div id="travel">
         <div class="container content-lg">
             <div class="row">
@@ -262,17 +245,13 @@
                 </div>
                 <div class="col-sm-8 col-sm-offset-1">
 
-                    <!-- Upload toolbar -->
-                    <div class="upload-toolbar">
-                        <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;">
-                        <button class="btn btn-upload" id="uploadBtn">
-                            <i class="icon-cloud-upload"></i> Upload Photos
-                        </button>
-                        <button class="btn btn-clear" id="clearUploadsBtn">
-                            <i class="icon-trash"></i> Clear Uploads
-                        </button>
-                        <span class="upload-info">Max 2 MB per photo · Saved in browser</span>
+                    <!-- Loading Indicator -->
+                    <div id="galleryStatus" class="gallery-status">
+                        <i class="icon-refresh"></i> កំពុងទាញយករូបភាពពី Pixabay...
                     </div>
+
+                    <!-- Error Alert -->
+                    <div id="galleryError" class="alert alert-danger"></div>
 
                     <!-- Masonry grid -->
                     <div class="masonry-grid row">
@@ -353,23 +332,22 @@
     <script src="js/components/wow.min.js" type="text/javascript"></script>
 
     <!-- ================================================================
-         MY OWN PHOTOS  +  UPLOAD  +  LIGHTBOX
+         PIXABAY API FETCH  +  MASONRY  +  LIGHTBOX
          ================================================================ -->
     <script>
         $(document).ready(function () {
 
             /* ============================================================
-               1.  CONFIG
+               1.  CONFIGURATION
                ============================================================ */
-            var STORAGE_KEY  = 'phun_travel_uploads_v1';
-            var MAX_LOCAL_ID = 100;      // img/travel/t1.jpg → t100.jpg
-            var MAX_FILE_MB  = 2;        // max size per uploaded image
-
-            // files that don't exist / are commented out in original code
-            var SKIP_LOCAL = { 84: true, 90: true, 97: true };
+            var API_KEY = '42020991-e38fcf0988ea1811fab6ddadb'; // API Key របស់អ្នក
+            
+            // ដាក់ ID នៃរូបភាពទាំង ៤ របស់អ្នកនៅទីនេះ (ខណ្ឌចែកដោយសញ្ញាក្បៀស)។ 
+            // ឧទាហរណ៍៖ [1234567, 7654321, 1122334, 4433221]
+            var MY_PIXABAY_IDS = []; 
 
             /* ============================================================
-               2.  MASONRY SETUP (empty grid + sizer)
+               2.  MASONRY SETUP
                ============================================================ */
             var $grid = $('.masonry-grid');
 
@@ -392,20 +370,16 @@
             initMasonry();
 
             /* ============================================================
-               3.  HELPERS  —  build + append a gallery item
+               3.  HELPER FUNCTIONS
                ============================================================ */
-            function makeItem(src, alt, isUpload) {
-                var $item = $(
+            function makeItem(src, alt) {
+                return $(
                     '<div class="masonry-grid-item col-xs-12 col-sm-6 col-md-4">'
-                  + '  <div class="gallery-item"' +
-                        ' data-img-src="' + src + '"' +
-                        ' data-img-alt="' + alt + '"' +
-                        (isUpload ? ' data-uploaded="true"' : '') + '>'
+                  + '  <div class="gallery-item" data-img-src="' + src + '" data-img-alt="' + alt + '">'
                   + '    <img class="full-width img-responsive" src="' + src + '" alt="' + alt + '" loading="lazy">'
                   + '  </div>'
                   + '</div>'
                 );
-                return $item;
             }
 
             function appendItem($item) {
@@ -414,140 +388,57 @@
             }
 
             /* ============================================================
-               4.  RENDER LOCAL IMAGES  (img/travel/t1..t100.jpg)
+               4.  FETCH DATA FROM PIXABAY API
                ============================================================ */
-            function renderLocalImages() {
-                for (var i = 1; i <= MAX_LOCAL_ID; i++) {
-                    if (SKIP_LOCAL[i]) continue;
-                    (function (idx) {
-                        var src = 'img/travel/t' + idx + '.jpg';
-                        var alt = 'Travel Photo ' + idx;
-                        var $item = makeItem(src, alt, false);
+            function fetchPixabayImages() {
+                $('#galleryStatus').show();
+                $('#galleryError').hide();
 
-                        // If image is missing (404), remove the placeholder gracefully
-                        $item.find('img').on('error', function () {
-                            $item.remove();
-                            layout();
-                        });
+                var apiUrl = 'https://pixabay.com/api/?key=' + API_KEY;
 
-                        appendItem($item);
-                    })(i);
+                // ប្រសិនបើអ្នកដាក់ ID នៅក្នុង MY_PIXABAY_IDS វានឹងទាញយកតាម ID
+                // ប្រសិនបើទំនេរ វានឹងទាញយករូបភាពអំពី "travel" ជាទូទៅ
+                if (MY_PIXABAY_IDS.length > 0) {
+                    apiUrl += '&id=' + MY_PIXABAY_IDS.join(',');
+                } else {
+                    apiUrl += '&q=travel&image_type=photo&category=travel&per_page=20';
                 }
+
+                $.getJSON(apiUrl)
+                    .done(function (data) {
+                        if (data.hits && data.hits.length > 0) {
+                            data.hits.forEach(function (hit) {
+                                // ប្រើ webformatURL (ទំហំ 640px) សម្រាប់បង្ហាញក្នុង Gallery
+                                var thumb = hit.webformatURL;
+                                // ប្រើ largeImageURL (ទំហំ 1280px) សម្រាប់បង្ហាញពេលចុចមើលធំ (Lightbox)
+                                var full  = hit.largeImageURL || hit.webformatURL;
+                                var alt   = (hit.tags || 'Travel Photo').replace(/"/g, '&quot;');
+
+                                appendItem(makeItem(thumb, alt, full)); 
+                            });
+                        } else {
+                            $('#galleryError').text('មិនមានរូបភាពត្រូវបានរកឃើញទេ។ សូមពិនិត្យ ID ឬ API Key របស់អ្នក។').show();
+                        }
+                    })
+                    .fail(function (xhr) {
+                        var msg = 'មានបញ្ហាក្នុងការទាញយករូបភាពពី Pixabay។';
+                        if (xhr.status === 429) {
+                            msg = 'អ្នកបានធ្វើ Request ច្រើនពេក (Rate limit)។ សូមរង់ចាំមួយភ្លែត។';
+                        }
+                        $('#galleryError').text(msg).show();
+                    })
+                    .always(function () {
+                        $('#galleryStatus').hide();
+                    });
             }
 
             /* ============================================================
-               5.  UPLOADED IMAGES  —  localStorage
+               5.  INITIALIZE GALLERY
                ============================================================ */
-            function loadUploads() {
-                try {
-                    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                } catch (e) {
-                    return [];
-                }
-            }
-
-            function saveUploads(arr) {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-                    return true;
-                } catch (e) {
-                    return false;  // quota exceeded
-                }
-            }
-
-            function renderUploads() {
-                loadUploads().forEach(function (img) {
-                    var $item = makeItem(img.src, img.alt || 'Uploaded photo', true);
-                    appendItem($item);
-                });
-            }
+            fetchPixabayImages();
 
             /* ============================================================
-               6.  UPLOAD BUTTON
-               ============================================================ */
-            $('#uploadBtn').on('click', function () {
-                $('#imageUpload').trigger('click');
-            });
-
-            $('#imageUpload').on('change', function (e) {
-                var files = e.target.files;
-                if (!files || !files.length) return;
-
-                var uploads = loadUploads();
-                var queued  = 0;
-                var done    = 0;
-                var skipped = [];
-
-                Array.prototype.forEach.call(files, function (file) {
-                    if (!file.type || file.type.indexOf('image/') !== 0) {
-                        skipped.push(file.name + ' (not an image)');
-                        return;
-                    }
-                    if (file.size > MAX_FILE_MB * 1024 * 1024) {
-                        skipped.push(file.name + ' (> ' + MAX_FILE_MB + ' MB)');
-                        return;
-                    }
-                    queued++;
-
-                    var reader = new FileReader();
-                    reader.onload = (function (f) {
-                        return function (evt) {
-                            var src = evt.target.result;
-                            var alt = f.name.replace(/\.[^.]+$/, '');
-                            var record = { src: src, alt: alt };
-
-                            uploads.push(record);
-                            appendItem(makeItem(src, alt, true));
-
-                            done++;
-                            if (done === queued) {
-                                // All files read — try to save
-                                if (!saveUploads(uploads)) {
-                                    alert(
-                                        'Uploaded photos are visible now, but could not be saved ' +
-                                        'because browser storage is full.\n\n' +
-                                        'They will disappear when you refresh. ' +
-                                        'Try smaller photos or click "Clear Uploads" first.'
-                                    );
-                                }
-                                if (skipped.length) {
-                                    alert('Skipped files:\n• ' + skipped.join('\n• '));
-                                }
-                            }
-                        };
-                    })(file);
-
-                    reader.readAsDataURL(file);
-                });
-
-                if (queued === 0) {
-                    if (skipped.length) alert('Skipped files:\n• ' + skipped.join('\n• '));
-                }
-
-                $(this).val('');  // reset so same file can be re-selected
-            });
-
-            /* ============================================================
-               7.  CLEAR UPLOADS
-               ============================================================ */
-            $('#clearUploadsBtn').on('click', function () {
-                if (!confirm('Remove all uploaded photos? (Local img/travel/ photos will stay)')) return;
-
-                localStorage.removeItem(STORAGE_KEY);
-                $('.gallery-item[data-uploaded="true"]')
-                    .closest('.masonry-grid-item')
-                    .remove();
-                layout();
-            });
-
-            /* ============================================================
-               8.  RENDER EVERYTHING
-               ============================================================ */
-            renderLocalImages();
-            renderUploads();
-
-            /* ============================================================
-               9.  LIGHTBOX
+               6.  LIGHTBOX LOGIC
                ============================================================ */
             var allImages    = [];
             var currentIndex = 0;
@@ -556,9 +447,7 @@
                 allImages = [];
                 $('.gallery-item').each(function () {
                     var src = $(this).data('img-src');
-                    var alt = $(this).data('img-alt') ||
-                              $(this).find('img').attr('alt') ||
-                              'Travel Photo';
+                    var alt = $(this).data('img-alt') || 'Travel Photo';
                     if (src) allImages.push({ src: src, alt: alt });
                 });
             }
@@ -632,7 +521,7 @@
             });
 
             $('img').css('border-radius', '0');
-            console.log('✅ Gallery ready — local photos + upload support.');
+            console.log('✅ Gallery ready — Fetching from Pixabay API.');
         });
     </script>
 
